@@ -43,7 +43,8 @@ export default function SynthwaveNftViewer() {
 
       setStatus('Decoding data...');
       const cleanedHex = result.result.slice(2);
-      const offset = parseInt(cleanedHex.slice(0, 64), 16);
+      // Remove this line:
+      // const offset = parseInt(cleanedHex.slice(0, 64), 16);
       const length = parseInt(cleanedHex.slice(64, 128), 16);
       const dataHex = cleanedHex.slice(128, 128 + length * 2);
 
