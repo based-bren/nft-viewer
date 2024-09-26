@@ -127,7 +127,7 @@ export default function SynthwaveNftViewer() {
         }
       `}</style>
 
-      <div className="container mx-auto max-w-2xl">
+      <div className="container mx-auto max-w-2xl px-4">
         <h1 className="text-4xl mb-4 text-center text-white neon-text">HAM PEPE VIEWER</h1>
         
         <Card className="mb-8 bg-black bg-opacity-50 neon-border rounded-lg">
@@ -152,7 +152,7 @@ export default function SynthwaveNftViewer() {
 
         <Card className="bg-black bg-opacity-50 neon-border rounded-lg">
           <CardContent className="p-0">
-            <div className="bg-purple-900 neon-border rounded overflow-hidden" style={{height: '680px', width: '680px', margin: '0 auto'}}>
+            <div className="bg-purple-900 neon-border rounded overflow-hidden w-full h-full" style={{maxWidth: '680px', maxHeight: '680px', margin: '0 auto', aspectRatio: '1 / 1'}}>
               <div className="svg-container">
                 <svg width="100%" height="100%" viewBox="0 0 640 640" preserveAspectRatio="xMidYMid meet" className="svg-content">
                   <g>
