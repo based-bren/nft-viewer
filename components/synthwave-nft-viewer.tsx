@@ -66,7 +66,7 @@ export default function SynthwaveNftViewer() {
         }
         setStatus('Pepe displayed successfully!');
       } else {
-        setStatus('No image data found in the metadata.');
+        setStatus('No image data found.');
       }
     } catch (error) {
       console.error('Error:', error);
