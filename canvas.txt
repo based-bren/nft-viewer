@@ -1,0 +1,47 @@
+import { useEffect, useRef } from "react";
+ 
+export function CanvasImageLoader({
+  src,
+  className,
+}: {
+  className?: string;
+  src?: string;
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>();
+  useEffect(() => {
+    if (src) {
+      // Create an Image object
+      const img = new Image();
+ 
+      img.onload = () => {
+        // Create an off-screen canvas with the original SVG dimensions
+        const offScreenCanvas = document.createElement("canvas");
+        offScreenCanvas.width = 64; // Original width
+        offScreenCanvas.height = 64; // Original height
+        const offCtx = offScreenCanvas.getContext("2d")!;
+ 
+        // Draw the image (SVG) onto the off-screen canvas
+        offCtx.drawImage(img, 0, 0, 64, 64);
+ 
+        // Create the main canvas and get its context
+        const canvas = canvasRef.current!;
+        const targetWidth = 640;
+        const targetHeight = 640;
+        canvas.width = targetWidth; // Target width
+        canvas.height = targetHeight; // Target height
+        const ctx = canvas.getContext("2d")!;
+        ctx.clearRect(0, 0, targetWidth, targetHeight);
+ 
+        // Disable image smoothing to achieve the pixelated effect
+        ctx.imageSmoothingEnabled = false;
+ 
+        // Draw the off-screen canvas onto the main canvas, scaling it up
+        ctx.drawImage(offScreenCanvas, 0, 0, targetWidth, targetHeight);
+ 
+        // Cleanup Blob URL
+      };
+      img.src = src;
+    }
+  }, [open]);
+  return <canvas className={className} ref={canvasRef} />;
+}

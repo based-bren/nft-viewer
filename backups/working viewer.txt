@@ -1,60 +1,21 @@
 'use client'
 
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
 const contractAddress = '0x1f7979C368c82dc647E075FfD61ed149052e3D6B';
 const rpcUrl = 'https://base.meowrpc.com';
-function CanvasImageLoader({
-  className,
-  src,
-}: {
-  className?: string;
-  src?: string;
-}) {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-
-  useEffect(() => {
-    if (src && canvasRef.current) {
-      const img = new Image();
-
-      img.onload = () => {
-        const offScreenCanvas = document.createElement("canvas");
-        offScreenCanvas.width = 64;
-        offScreenCanvas.height = 64;
-        const offCtx = offScreenCanvas.getContext("2d")!;
-
-        offCtx.drawImage(img, 0, 0, 64, 64);
-
-        const canvas = canvasRef.current!;
-        const targetWidth = 640;
-        const targetHeight = 640;
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-        const ctx = canvas.getContext("2d")!;
-        ctx.clearRect(0, 0, targetWidth, targetHeight);
-
-        ctx.imageSmoothingEnabled = false;
-
-        ctx.drawImage(offScreenCanvas, 0, 0, targetWidth, targetHeight);
-      };
-      img.src = src;
-    }
-  }, [src]);
-
-  return <canvas className={className} ref={canvasRef} />;
-}
 
 export default function SynthwaveNftViewer() {
   const [tokenId, setTokenId] = useState('')
   const [status, setStatus] = useState('')
-  const [svgSrc, setSvgSrc] = useState('')
+  const svgRef = useRef<HTMLDivElement>(null)
 
   const fetchAndDisplaySVG = async () => {
     setStatus('Fetching data...')
-    setSvgSrc('')
+    if (svgRef.current) svgRef.current.innerHTML = ''
 
     try {
       const data = {
@@ -98,7 +59,10 @@ export default function SynthwaveNftViewer() {
       const metadata = JSON.parse(jsonData);
 
       if (metadata.image) {
-        setSvgSrc(metadata.image);
+        const svgimg = atob(metadata.image.replace(/data:image\/svg\+xml;base64,/, ''));
+        if (svgRef.current) {
+          svgRef.current.innerHTML = svgimg;
+        }
         setStatus('Pepe displayed successfully!');
       } else {
         setStatus('No image data found.');
@@ -109,11 +73,68 @@ export default function SynthwaveNftViewer() {
     }
   }
 
-  // ... (rest of the component remains the same)
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-pink-800 to-orange-600 text-white p-4 font-['Orbitron'] flex flex-col synthwave-bg">
-      {/* ... (styles and other elements remain the same) */}
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+        .synthwave-bg {
+          background-size: 400% 400%;
+          animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        .neon-text {
+          text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff00de, 0 0 35px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 75px #ff00de;
+        }
+
+        .neon-border {
+          box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff00de, 0 0 35px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 75px #ff00de;
+        }
+
+        .svg-container {
+          display: inline-block;
+          position: relative;
+          width: 100%;
+          padding-bottom: 100%;
+          vertical-align: middle;
+          overflow: hidden;
+        }
+
+        .svg-content {
+          display: inline-block;
+          position: absolute;
+          top: 0;
+          left: 0;
+          max-width: 100%;
+          max-height: 100%;
+          image-rendering: -webkit-optimize-contrast;
+          -ms-interpolation-mode: nearest-neighbor;
+          image-rendering: -moz-crisp-edges;
+          image-rendering: pixelated;
+        }
+
+        /* Apply the same styles to the inner SVG content */
+        .svg-content svg,
+        .svg-content img {
+          image-rendering: -webkit-optimize-contrast;
+          -ms-interpolation-mode: nearest-neighbor;
+          image-rendering: -moz-crisp-edges;
+          image-rendering: pixelated;
+          
+        }
+      `}</style>
 
       <div className="container mx-auto max-w-2xl px-4">
         <h1 className="text-4xl mb-4 text-center text-white neon-text">HAM PEPE VIEWER</h1>
@@ -141,7 +162,18 @@ export default function SynthwaveNftViewer() {
         <Card className="mt-8 bg-black bg-opacity-50 neon-border rounded-lg">
           <CardContent className="p-0">
             <div className="bg-purple-900 neon-border rounded overflow-hidden w-full h-full" style={{maxWidth: '680px', maxHeight: '680px', margin: '0 auto', aspectRatio: '1 / 1'}}>
-              <CanvasImageLoader src={svgSrc} className="w-full h-full" />
+              <div className="svg-container">
+                <svg width="100%" height="100%" viewBox="0 0 640 640" preserveAspectRatio="xMidYMid meet" className="svg-content">
+                  <g>
+                    <foreignObject width="640" height="640">
+                    <div ref={svgRef} style={{
+                        width: '100%',
+                        height: '100%',
+                        }}></div>
+                    </foreignObject>
+                  </g>
+                </svg>
+              </div>
             </div>
           </CardContent>
         </Card>
