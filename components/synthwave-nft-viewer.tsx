@@ -162,8 +162,8 @@ export default function SynthwaveNftViewer() {
                       <div ref={svgRef} style={{
                         width: '100%',
                         height: '100%',
-                        imageRendering: '-webkit-optimize-contrast',
-                        //shapeRendering: 'crispEdges',
+                        imageRendering: ['-webkit-optimize-contrast, -moz-crisp-edges, pixelated'],
+                        shapeRendering: 'crispEdges',
                         }}></div>
                     </foreignObject>
                   </g>
