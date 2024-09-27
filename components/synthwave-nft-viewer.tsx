@@ -109,12 +109,68 @@ export default function SynthwaveNftViewer() {
     }
   }
 
-  // ... (rest of the component remains the same)
-
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-pink-800 to-orange-600 text-white p-4 font-['Orbitron'] flex flex-col synthwave-bg">
-      {/* ... (styles and other elements remain the same) */}
+      <style jsx global>{`
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
+        .synthwave-bg {
+          background-size: 400% 400%;
+          animation: gradient 15s ease infinite;
+        }
+
+        @keyframes gradient {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+
+        .neon-text {
+          text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff00de, 0 0 35px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 75px #ff00de;
+        }
+
+        .neon-border {
+          box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #ff00de, 0 0 35px #ff00de, 0 0 40px #ff00de, 0 0 50px #ff00de, 0 0 75px #ff00de;
+        }
+
+        .svg-container {
+          display: inline-block;
+          position: relative;
+          width: 100%;
+          padding-bottom: 100%;
+          vertical-align: middle;
+          overflow: hidden;
+        }
+
+        .svg-content {
+          display: inline-block;
+          position: absolute;
+          top: 0;
+          left: 0;
+          max-width: 100%;
+          max-height: 100%;
+          image-rendering: -webkit-optimize-contrast;
+          -ms-interpolation-mode: nearest-neighbor;
+          image-rendering: -moz-crisp-edges;
+          image-rendering: pixelated;
+        }
+
+        /* Apply the same styles to the inner SVG content */
+        .svg-content svg,
+        .svg-content img {
+          image-rendering: -webkit-optimize-contrast;
+          -ms-interpolation-mode: nearest-neighbor;
+          image-rendering: -moz-crisp-edges;
+          image-rendering: pixelated;
+          
+        }
+      `}</style>
       <div className="container mx-auto max-w-2xl px-4">
         <h1 className="text-4xl mb-4 text-center text-white neon-text">HAM PEPE VIEWER</h1>
         
@@ -136,7 +192,7 @@ export default function SynthwaveNftViewer() {
           </CardContent>
         </Card>
 
-        <div className="text-center mb-8">{status}</div>
+        <div className="text-center mb-8 neon-text">{status}</div>
 
         <Card className="mt-8 bg-black bg-opacity-50 neon-border rounded-lg">
           <CardContent className="p-0">
