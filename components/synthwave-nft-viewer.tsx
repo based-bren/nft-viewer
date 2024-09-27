@@ -122,7 +122,7 @@ export default function SynthwaveNftViewer() {
           image-rendering: -webkit-optimize-contrast;
           -ms-interpolation-mode: nearest-neighbor;
           image-rendering: -moz-crisp-edges;
-          image-rendering: pixelated
+          image-rendering: pixelated;
         }
 
         /* Apply the same styles to the inner SVG content */
@@ -131,7 +131,7 @@ export default function SynthwaveNftViewer() {
           image-rendering: -webkit-optimize-contrast;
           -ms-interpolation-mode: nearest-neighbor;
           image-rendering: -moz-crisp-edges;
-          image-rendering: pixelated
+          image-rendering: pixelated;
           
         }
       `}</style>
@@ -169,10 +169,7 @@ export default function SynthwaveNftViewer() {
                     <div ref={svgRef} style={{
                         width: '100%',
                         height: '100%',
-                        imageRendering: 'pixelated',
-                        
-                  
-                      }}></div>
+                        }}></div>
                     </foreignObject>
                   </g>
                 </svg>
