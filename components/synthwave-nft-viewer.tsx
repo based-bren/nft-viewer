@@ -126,6 +126,9 @@ export default function SynthwaveNftViewer() {
         .svg-content svg,
         .svg-content img {
           image-rendering: pixelated;
+          image-rendering: -moz-crisp-edges;
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: optimize-contrast;
         }
       `}</style>
 
@@ -159,12 +162,14 @@ export default function SynthwaveNftViewer() {
                 <svg width="100%" height="100%" viewBox="0 0 640 640" preserveAspectRatio="xMidYMid meet" className="svg-content">
                   <g>
                     <foreignObject width="640" height="640">
-                      <div ref={svgRef} style={{
+                    <div ref={svgRef} style={{
                         width: '100%',
                         height: '100%',
-                        imageRendering: '-moz-crisp-edges',
-
-                        }}></div>
+                        imageRendering: 'crisp-edges',
+                        shapeRendering: 'crispEdges',
+                        ['msInterpolationMode' as string]: 'nearest-neighbor',
+                  
+                      }}></div>
                     </foreignObject>
                   </g>
                 </svg>
