@@ -120,6 +120,9 @@ export default function SynthwaveNftViewer() {
           max-width: 100%;
           max-height: 100%;
           image-rendering: pixelated;
+          image-rendering: -moz-crisp-edges;
+          image-rendering: -webkit-optimize-contrast;
+          -ms-interpolation-mode: nearest-neighbor;
         }
 
         /* Apply the same styles to the inner SVG content */
@@ -128,7 +131,8 @@ export default function SynthwaveNftViewer() {
           image-rendering: pixelated;
           image-rendering: -moz-crisp-edges;
           image-rendering: -webkit-optimize-contrast;
-          image-rendering: optimize-contrast;
+          -ms-interpolation-mode: nearest-neighbor;
+          
         }
       `}</style>
 
