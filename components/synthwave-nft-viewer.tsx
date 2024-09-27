@@ -164,7 +164,7 @@ export default function SynthwaveNftViewer() {
                         height: '100%',
                         imageRendering: 'pixelated',
                         shapeRendering: 'geometricPrecision',
-                        //['msInterpolationMode' as string]: 'nearest-neighbor',
+                        ['msInterpolationMode' as string]: 'nearest-neighbor',
                   
                       }}></div>
                     </foreignObject>
