@@ -1,6 +1,5 @@
 'use client'
 
-import React from 'react'
 import { useState, useRef, useEffect } from 'react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
@@ -14,39 +13,44 @@ function CanvasImageLoader({
 }: {
   className?: string;
   src?: string;
-}, ref: React.ForwardedRef<HTMLCanvasElement>) {
+}) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
   useEffect(() => {
-    if (src && ref && 'current' in ref && ref.current) {
+    if (src && canvasRef.current) {
       const img = new Image();
 
       img.onload = () => {
-        const canvas = ref.current!;
-        const ctx = canvas.getContext("2d")!;
+        const offScreenCanvas = document.createElement("canvas");
+        offScreenCanvas.width = 64;
+        offScreenCanvas.height = 64;
+        const offCtx = offScreenCanvas.getContext("2d")!;
 
+        offCtx.drawImage(img, 0, 0, 64, 64);
+
+        const canvas = canvasRef.current!;
         const targetWidth = 640;
         const targetHeight = 640;
         canvas.width = targetWidth;
         canvas.height = targetHeight;
+        const ctx = canvas.getContext("2d")!;
         ctx.clearRect(0, 0, targetWidth, targetHeight);
 
         ctx.imageSmoothingEnabled = false;
 
-        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+        ctx.drawImage(offScreenCanvas, 0, 0, targetWidth, targetHeight);
       };
       img.src = src;
     }
-  }, [src, ref]);
+  }, [src]);
 
-  return <canvas className={className} ref={ref} />;
+  return <canvas className={className} ref={canvasRef} />;
 }
-
-const ForwardedCanvasImageLoader = React.forwardRef(CanvasImageLoader);
 
 export default function SynthwaveNftViewer() {
   const [tokenId, setTokenId] = useState('')
   const [status, setStatus] = useState('')
   const [svgSrc, setSvgSrc] = useState('')
-  const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const fetchAndDisplaySVG = async () => {
     setStatus('Fetching data...')
@@ -104,24 +108,6 @@ export default function SynthwaveNftViewer() {
       setStatus(`Error: ${error instanceof Error ? error.message : 'An unknown error occurred'}`);
     }
   }
-
-  const handleDownload = () => {
-    if (canvasRef.current) {
-      const canvas = canvasRef.current;
-      canvas.toBlob((blob) => {
-        if (blob) {
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement('a');
-          a.href = url;
-          a.download = `ham-pepe-${tokenId}.png`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
-          URL.revokeObjectURL(url);
-        }
-      }, 'image/png');
-    }
-  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-purple-900 via-pink-800 to-orange-600 text-white p-4 font-['Orbitron'] flex flex-col synthwave-bg">
@@ -211,18 +197,10 @@ export default function SynthwaveNftViewer() {
         <Card className="mt-8 bg-black bg-opacity-50 neon-border rounded-lg">
           <CardContent className="p-0">
             <div className="bg-purple-900 neon-border rounded overflow-hidden w-full h-full" style={{maxWidth: '680px', maxHeight: '680px', margin: '0 auto', aspectRatio: '1 / 1'}}>
-              <ForwardedCanvasImageLoader src={svgSrc} className="w-full h-full" ref={canvasRef} />
+              <CanvasImageLoader src={svgSrc} className="w-full h-full" />
             </div>
           </CardContent>
         </Card>
-
-        {svgSrc && (
-          <div className="mt-4 text-center">
-            <Button onClick={handleDownload} className="bg-pink-600 hover:bg-pink-500 text-white neon-border rounded">
-              Download PNG
-            </Button>
-          </div>
-        )}
       </div>
 
       <footer className="mt-auto pt-8 pb-4">
