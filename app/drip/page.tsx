@@ -5,10 +5,6 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 
-const OPENSEA_API_KEY = process.env.NEXT_PUBLIC_OPENSEA_API_KEY;
-const CONTRACT_ADDRESS = '0x1f7979C368c82dc647E075FfD61ed149052e3D6B';
-const CHAIN = 'base';
-
 const TRAIT_ORDER = ['Skin', 'Pants', 'Shirt', 'Eyes', 'Hat', 'Special'];
 
 interface Trait {
