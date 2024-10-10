@@ -11,6 +11,11 @@ const CHAIN = 'base';
 
 const TRAIT_ORDER = ['Skin', 'Pants', 'Shirt', 'Eyes', 'Hat', 'Special'];
 
+interface Trait {
+  trait_type: string;
+  value: string;
+}
+
 export default function DripNftViewer() {
   const [tokenId, setTokenId] = useState('')
   const [traits, setTraits] = useState<Record<string, string>>({})
@@ -40,7 +45,7 @@ export default function DripNftViewer() {
       const data = await response.json()
       console.log('NFT data:', data) // Add this log
       const traitObject: Record<string, string> = {}
-      data.nft.traits.forEach((trait: any) => {
+      data.nft.traits.forEach((trait: Trait) => {
         traitObject[trait.trait_type] = trait.value
       })
       console.log('Traits:', traitObject) // Add this log
