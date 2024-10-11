@@ -129,13 +129,20 @@ export default function DripNftViewer() {
 
   const ColorButton = ({ color, isSelected, onClick }: { color: string; isSelected: boolean; onClick: () => void }) => (
     <button
-      className={`w-8 h-8 border-2 ${isSelected ? 'border-white' : 'border-transparent'} relative`}
+      className={`w-8 h-8 border-2 ${isSelected ? 'border-white' : 'border-transparent'} relative flex items-center justify-center`}
       style={{ 
-        backgroundColor: color === 'Transparent' ? 'transparent' : color.toLowerCase(),
-        boxShadow: `0 0 10px 2px ${color === 'Transparent' ? 'rgba(255, 255, 255, 0.5)' : color.toLowerCase()}`,
+        backgroundColor: color === 'Transparent' ? 'transparent' : 
+                         color === 'Mint' ? '#98ff98' : color.toLowerCase(),
+        boxShadow: `0 0 10px 2px ${color === 'Transparent' ? 'rgba(255, 255, 255, 0.5)' : 
+                                   color === 'Mint' ? '#98ff98' : color.toLowerCase()}`,
       }}
       onClick={onClick}
     >
+      {color === 'Transparent' && (
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      )}
       <span className="absolute inset-0 bg-white opacity-0 hover:opacity-20 transition-opacity duration-200"></span>
     </button>
   );
