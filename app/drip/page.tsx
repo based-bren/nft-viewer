@@ -129,10 +129,15 @@ export default function DripNftViewer() {
 
   const ColorButton = ({ color, isSelected, onClick }: { color: string; isSelected: boolean; onClick: () => void }) => (
     <button
-      className={`w-8 h-8 rounded-full border-2 ${isSelected ? 'border-white' : 'border-transparent'}`}
-      style={{ backgroundColor: color === 'Transparent' ? 'transparent' : color.toLowerCase() }}
+      className={`w-8 h-8 border-2 ${isSelected ? 'border-white' : 'border-transparent'} relative`}
+      style={{ 
+        backgroundColor: color === 'Transparent' ? 'transparent' : color.toLowerCase(),
+        boxShadow: `0 0 10px 2px ${color === 'Transparent' ? 'rgba(255, 255, 255, 0.5)' : color.toLowerCase()}`,
+      }}
       onClick={onClick}
-    />
+    >
+      <span className="absolute inset-0 bg-white opacity-0 hover:opacity-20 transition-opacity duration-200"></span>
+    </button>
   );
 
   return (
@@ -220,7 +225,7 @@ export default function DripNftViewer() {
             </CardHeader>
             <CardContent className="flex flex-col items-center">
               <img src={imageUrl} alt="Generated Ham Pepe" className="max-w-full h-auto mb-4" />
-              <div className="flex justify-center space-x-2 mb-4">
+              <div className="flex justify-center space-x-3 mb-4">
                 {BACKGROUND_COLORS.map((color) => (
                   <ColorButton
                     key={color}
