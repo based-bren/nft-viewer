@@ -31,7 +31,14 @@ export default function DripNftViewer() {
     setImageUrl('')
 
     try {
-      const response = await fetch(`/api/nft/${tokenId}`)
+      const response = await fetch(
+        `https://api.opensea.io/api/v2/chain/${CHAIN}/contract/${CONTRACT_ADDRESS}/nfts/${tokenId}`,
+        {
+          headers: {
+            'X-API-KEY': process.env.NEXT_PUBLIC_OPENSEA_API_KEY || '',
+          },
+        }
+      )
 
       if (!response.ok) {
         throw new Error('Failed to fetch NFT data')
