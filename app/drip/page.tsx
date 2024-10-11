@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
 import Image from 'next/image'
 
 const TRAIT_ORDER = ['Skin', 'Pants', 'Shirt', 'Eyes', 'Hat', 'Special'];
+const BACKGROUND_COLORS = ['Blue', 'Green', 'Grey', 'Mint', 'Pink', 'Purple', 'Yellow', 'Transparent'];
 
 interface Trait {
   trait_type: string;
@@ -21,6 +22,7 @@ export default function DripNftViewer() {
   const [imageUrl, setImageUrl] = useState('')
   const [useHamHat, setUseHamHat] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const [selectedBackground, setSelectedBackground] = useState('Green');
 
   const fetchNftData = async () => {
     setIsLoading(true)
@@ -56,7 +58,7 @@ export default function DripNftViewer() {
     if (Object.keys(traits).length > 0) {
       generateImage()
     }
-  }, [traits, useHamHat])
+  }, [traits, useHamHat, selectedBackground])
 
   const generateImage = async () => {
     const canvas = canvasRef.current
@@ -69,7 +71,9 @@ export default function DripNftViewer() {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
 
     // Load and draw the background
-    await drawImage(ctx, '/traits/Back/Green.png')
+    if (selectedBackground !== 'Transparent') {
+      await drawImage(ctx, `/traits/Back/${selectedBackground}.png`)
+    }
 
     // Load and draw the base
     await drawImage(ctx, '/traits/Skin/Base.png')
@@ -122,6 +126,14 @@ export default function DripNftViewer() {
       document.body.removeChild(link);
     }
   };
+
+  const ColorButton = ({ color, isSelected, onClick }: { color: string; isSelected: boolean; onClick: () => void }) => (
+    <button
+      className={`w-8 h-8 rounded-full border-2 ${isSelected ? 'border-white' : 'border-transparent'}`}
+      style={{ backgroundColor: color === 'Transparent' ? 'transparent' : color.toLowerCase() }}
+      onClick={onClick}
+    />
+  );
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-indigo-900 via-purple-800 to-violet-600 text-white p-4 font-['Orbitron'] flex flex-col drip-bg">
@@ -208,6 +220,19 @@ export default function DripNftViewer() {
             </CardHeader>
             <CardContent className="flex flex-col items-center">
               <img src={imageUrl} alt="Generated Ham Pepe" className="max-w-full h-auto mb-4" />
+              <div className="flex justify-center space-x-2 mb-4">
+                {BACKGROUND_COLORS.map((color) => (
+                  <ColorButton
+                    key={color}
+                    color={color}
+                    isSelected={selectedBackground === color}
+                    onClick={() => {
+                      setSelectedBackground(color);
+                      generateImage();
+                    }}
+                  />
+                ))}
+              </div>
               <div className="flex flex-col space-y-2 w-full">
                 <Button 
                   className="bg-violet-600 hover:bg-violet-500 text-white neon-border rounded"
