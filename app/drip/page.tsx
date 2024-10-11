@@ -12,9 +12,6 @@ interface Trait {
   value: string;
 }
 
-const CONTRACT_ADDRESS = '0x1f7979C368c82dc647E075FfD61ed149052e3D6B'
-const CHAIN = 'base'
-
 export default function DripNftViewer() {
   const [tokenId, setTokenId] = useState('')
   const [traits, setTraits] = useState<Record<string, string>>({})
