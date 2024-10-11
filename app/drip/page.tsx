@@ -172,7 +172,7 @@ export default function DripNftViewer() {
         }
       `}</style>
       <div className="container mx-auto max-w-2xl px-4">
-        <h1 className="text-4xl mb-4 text-center text-white neon-text">HAM PEPE FUN TRAITS</h1>
+        <h1 className="text-4xl mb-4 text-center text-white neon-text">HAM PEPE DRIP</h1>
         
         <Card className="mb-8 bg-black bg-opacity-50 neon-border rounded-lg">
           <CardHeader>
