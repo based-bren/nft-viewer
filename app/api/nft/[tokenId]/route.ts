@@ -1,15 +1,14 @@
-import { NextApiRequest, NextApiResponse } from 'next'
+import { NextRequest, NextResponse } from 'next/server'
 
 const OPENSEA_API_KEY = process.env.OPENSEA_API_KEY
 const CONTRACT_ADDRESS = '0x1f7979C368c82dc647E075FfD61ed149052e3D6B'
 const CHAIN = 'base'
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { tokenId } = req.query
-
-  if (req.method !== 'GET') {
-    return res.status(405).json({ message: 'Method not allowed' })
-  }
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { tokenId: string } }
+) {
+  const { tokenId } = params
 
   try {
     const response = await fetch(
@@ -26,9 +25,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     const data = await response.json()
-    res.status(200).json(data)
+    return NextResponse.json(data)
   } catch (error) {
     console.error('Error fetching NFT data:', error)
-    res.status(500).json({ message: 'Error fetching NFT data' })
+    return NextResponse.json({ message: 'Error fetching NFT data' }, { status: 500 })
   }
 }
