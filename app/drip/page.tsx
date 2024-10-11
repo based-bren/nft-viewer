@@ -12,6 +12,9 @@ interface Trait {
   value: string;
 }
 
+const CONTRACT_ADDRESS = '0x1f7979C368c82dc647E075FfD61ed149052e3D6B'
+const CHAIN = 'base'
+
 export default function DripNftViewer() {
   const [tokenId, setTokenId] = useState('')
   const [traits, setTraits] = useState<Record<string, string>>({})
@@ -28,7 +31,14 @@ export default function DripNftViewer() {
     setImageUrl('')
 
     try {
-      const response = await fetch(`/api/nft/${tokenId}`)
+      const response = await fetch(
+        `https://api.opensea.io/api/v2/chain/${CHAIN}/contract/${CONTRACT_ADDRESS}/nfts/${tokenId}`,
+        {
+          headers: {
+            'X-API-KEY': process.env.NEXT_PUBLIC_OPENSEA_API_KEY || '',
+          },
+        }
+      )
 
       if (!response.ok) {
         throw new Error('Failed to fetch NFT data')
@@ -97,7 +107,7 @@ export default function DripNftViewer() {
 
   const drawImage = (ctx: CanvasRenderingContext2D, src: string): Promise<void> => {
     return new Promise((resolve, reject) => {
-      const img = new Image()
+      const img = new window.Image()
       img.onload = () => {
         ctx.drawImage(img, 0, 0, ctx.canvas.width, ctx.canvas.height)
         resolve()
