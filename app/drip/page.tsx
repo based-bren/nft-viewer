@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
+import Image from 'next/image'
 
 const TRAIT_ORDER = ['Skin', 'Pants', 'Shirt', 'Eyes', 'Hat', 'Special'];
 
@@ -186,7 +187,21 @@ export default function DripNftViewer() {
           </Card>
         )}
 
-        {imageUrl && (
+        {isLoading && (
+          <Card className="mb-8 bg-black bg-opacity-50 neon-border rounded-lg">
+            <CardContent className="flex flex-col items-center">
+              <Image
+                src="/Running Pepe 2X transp.gif"
+                alt="Loading..."
+                width={200}
+                height={200}
+              />
+              <p className="text-center text-white mt-4">Loading your Ham Pepe...</p>
+            </CardContent>
+          </Card>
+        )}
+
+        {imageUrl && !isLoading && (
           <Card className="mb-8 bg-black bg-opacity-50 neon-border rounded-lg">
             <CardHeader>
               <CardTitle className="text-xl text-center text-white neon-text">YOUR HAM PEPE</CardTitle>
