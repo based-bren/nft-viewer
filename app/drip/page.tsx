@@ -141,17 +141,17 @@ export default function DripNftViewer() {
 
   const ColorButton = ({ color, isSelected, onClick }: { color: string; isSelected: boolean; onClick: () => void }) => (
     <button
-      className={`w-8 h-8 border-2 ${isSelected ? 'border-white' : 'border-transparent'} relative flex items-center justify-center`}
+      className={`w-6 h-6 sm:w-8 sm:h-8 border-2 ${isSelected ? 'border-white' : 'border-transparent'} relative flex items-center justify-center`}
       style={{ 
         backgroundColor: color === 'Transparent' ? 'transparent' : 
                          color === 'Mint' ? '#98ff98' : color.toLowerCase(),
-        boxShadow: `0 0 10px 2px ${color === 'Transparent' ? 'rgba(255, 255, 255, 0.5)' : 
+        boxShadow: `0 0 5px 1px ${color === 'Transparent' ? 'rgba(255, 255, 255, 0.5)' : 
                                    color === 'Mint' ? '#98ff98' : color.toLowerCase()}`,
       }}
       onClick={onClick}
     >
       {color === 'Transparent' && (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 sm:h-6 sm:w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       )}
@@ -270,7 +270,7 @@ export default function DripNftViewer() {
             </CardHeader>
             <CardContent className="flex flex-col items-center">
               <img src={imageUrl} alt="Generated Ham Pepe" className="max-w-full h-auto mb-4" />
-              <div className="flex justify-center space-x-3 mb-4">
+              <div className="flex justify-center flex-wrap gap-1 sm:gap-2 mb-4">
                 {BACKGROUND_COLORS.map((color) => (
                   <ColorButton
                     key={color}
