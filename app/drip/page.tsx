@@ -100,7 +100,7 @@ export default function DripNftViewer() {
 
     // Add the G'ham layer if useGham is true
     if (useGham) {
-      await drawImage(ctx, 'public/traits/top/gham.png')
+      await drawImage(ctx, '/images/gham.png')
     }
 
     // Convert canvas to image URL
