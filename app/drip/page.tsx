@@ -23,6 +23,7 @@ export default function DripNftViewer() {
   const [error, setError] = useState('')
   const [imageUrl, setImageUrl] = useState('')
   const [useHamHat, setUseHamHat] = useState(false)
+  const [useGham, setUseGham] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [selectedBackground, setSelectedBackground] = useState('Green');
 
@@ -60,7 +61,7 @@ export default function DripNftViewer() {
     if (Object.keys(traits).length > 0) {
       generateImage()
     }
-  }, [traits, useHamHat, selectedBackground])
+  }, [traits, useHamHat, useGham, selectedBackground])
 
   const generateImage = async () => {
     const canvas = canvasRef.current
@@ -97,6 +98,11 @@ export default function DripNftViewer() {
       await drawImage(ctx, '/traits/Hat/Ham hat.png')
     }
 
+    // Add the G'ham layer if useGham is true
+    if (useGham) {
+      await drawImage(ctx, '/traits/top/gham.png')
+    }
+
     // Convert canvas to image URL
     const imageUrl = canvas.toDataURL('image/png')
     setImageUrl(imageUrl)
@@ -116,6 +122,10 @@ export default function DripNftViewer() {
 
   const toggleHamHat = () => {
     setUseHamHat(!useHamHat)
+  }
+
+  const toggleGham = () => {
+    setUseGham(!useGham)
   }
 
   const downloadPng = () => {
@@ -279,6 +289,12 @@ export default function DripNftViewer() {
                   onClick={toggleHamHat}
                 >
                   {useHamHat ? 'Remove Ham Hat' : 'Add Ham Hat'}
+                </Button>
+                <Button 
+                  className="bg-violet-600 hover:bg-violet-500 text-white neon-border rounded"
+                  onClick={toggleGham}
+                >
+                  {useGham ? 'Remove G\'ham' : 'Add G\'ham'}
                 </Button>
                 <Button 
                   className="bg-green-600 hover:bg-green-500 text-white neon-border rounded"
