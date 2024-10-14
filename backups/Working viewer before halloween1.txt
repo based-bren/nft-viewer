@@ -24,12 +24,8 @@ export default function DripNftViewer() {
   const [imageUrl, setImageUrl] = useState('')
   const [useHamHat, setUseHamHat] = useState(false)
   const [useGham, setUseGham] = useState(false)
-  const [useWhiteHam, setUseWhiteHam] = useState(false)
-  const [useRedHam, setUseRedHam] = useState(false)
-  const [useSheet, setUseSheet] = useState(false)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [selectedBackground, setSelectedBackground] = useState('Green');
-  const [usePumpkin, setUsePumpkin] = useState(false);
 
   const fetchNftData = async () => {
     setIsLoading(true)
@@ -65,7 +61,7 @@ export default function DripNftViewer() {
     if (Object.keys(traits).length > 0) {
       generateImage()
     }
-  }, [traits, useHamHat, useGham, useWhiteHam, useRedHam, useSheet, selectedBackground, usePumpkin])
+  }, [traits, useHamHat, useGham, selectedBackground])
 
   const generateImage = async () => {
     const canvas = canvasRef.current
@@ -87,56 +83,19 @@ export default function DripNftViewer() {
 
     // Draw trait layers in order
     for (const traitType of TRAIT_ORDER) {
-      if (traitType === 'Shirt') {
-        if (useWhiteHam) {
-          await drawImage(ctx, '/traits/Shirt/WhiteHam.png')
-        } else if (useRedHam) {
-          await drawImage(ctx, '/traits/Shirt/RedHam.png')
-        } else if (useSheet) {
-          await drawImage(ctx, '/traits/Shirt/Sheet.png')
-        } else {
-          const traitValue = traits[traitType]
-          if (traitValue) {
-            await drawImage(ctx, `/traits/${traitType}/${traitValue}.png`)
-          }
-        }
-      } else if (traitType === 'Eyes') {
-        if (usePumpkin) {
-          await drawImage(ctx, '/traits/Eyes/Pumpkin.png')
-        } else {
-          const traitValue = traits[traitType]
-          if (traitValue) {
-            await drawImage(ctx, `/traits/${traitType}/${traitValue}.png`)
-          }
-        }
-      } else if (traitType === 'Hat') {
-        if (!usePumpkin) { // Only draw Hat if Pumpkin is not active
-          if (useHamHat) {
-            await drawImage(ctx, '/traits/Hat/Ham hat.png')
-          } else {
-            const traitValue = traits[traitType]
-            if (traitValue) {
-              await drawImage(ctx, `/traits/${traitType}/${traitValue}.png`)
-            }
-          }
-        }
-      } else if (traitType === 'Special') {
-        if (!usePumpkin) { // Only draw Special if Pumpkin is not active
-          const traitValue = traits[traitType]
-          if (traitValue) {
-            // Don't display Cigar, Cigarette, or Vape when Sheet is active
-            if (useSheet && ['Cigar', 'Cigarette', 'Vape'].includes(traitValue)) {
-              continue
-            }
-            await drawImage(ctx, `/traits/${traitType}/${traitValue}.png`)
-          }
-        }
+      if (traitType === 'Hat' && useHamHat) {
+        await drawImage(ctx, '/traits/Hat/Ham hat.png')
       } else {
         const traitValue = traits[traitType]
         if (traitValue) {
           await drawImage(ctx, `/traits/${traitType}/${traitValue}.png`)
         }
       }
+    }
+
+    // If useHamHat is true and there was no original hat, add the ham hat
+    if (useHamHat && !traits['Hat']) {
+      await drawImage(ctx, '/traits/Hat/Ham hat.png')
     }
 
     // Add the G'ham layer if useGham is true
@@ -163,44 +122,10 @@ export default function DripNftViewer() {
 
   const toggleHamHat = () => {
     setUseHamHat(!useHamHat)
-    if (useHamHat) {
-      setUsePumpkin(false); // Turn off Pumpkin when Ham Hat is activated
-    }
   }
 
   const toggleGham = () => {
     setUseGham(!useGham)
-  }
-
-  const toggleWhiteHam = () => {
-    setUseWhiteHam(!useWhiteHam)
-    if (useWhiteHam) {
-      setUseRedHam(false)
-      setUseSheet(false)
-    }
-  }
-
-  const toggleRedHam = () => {
-    setUseRedHam(!useRedHam)
-    if (useRedHam) {
-      setUseWhiteHam(false)
-      setUseSheet(false)
-    }
-  }
-
-  const toggleSheet = () => {
-    setUseSheet(!useSheet)
-    if (useSheet) {
-      setUseWhiteHam(false)
-      setUseRedHam(false)
-    }
-  }
-
-  const togglePumpkin = () => {
-    setUsePumpkin(!usePumpkin)
-    if (usePumpkin) {
-      setUseHamHat(false); // Turn off Ham Hat when Pumpkin is active
-    }
   }
 
   const downloadPng = () => {
@@ -230,16 +155,6 @@ export default function DripNftViewer() {
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
         </svg>
       )}
-      <span className="absolute inset-0 bg-white opacity-0 hover:opacity-20 transition-opacity duration-200"></span>
-    </button>
-  );
-
-  const FeatureButton = ({ isActive, onClick, imageSrc, alt }: { isActive: boolean; onClick: () => void; imageSrc: string; alt: string }) => (
-    <button
-      className={`w-8 h-8 sm:w-10 sm:h-10 border-2 ${isActive ? 'border-white' : 'border-transparent'} relative flex items-center justify-center bg-black bg-opacity-50 overflow-hidden`}
-      onClick={onClick}
-    >
-      <Image src={`/images/${imageSrc}`} alt={alt} width={32} height={32} className="w-full h-full object-cover" />
       <span className="absolute inset-0 bg-white opacity-0 hover:opacity-20 transition-opacity duration-200"></span>
     </button>
   );
@@ -368,50 +283,26 @@ export default function DripNftViewer() {
                   />
                 ))}
               </div>
-              <div className="flex justify-center flex-wrap gap-1 sm:gap-2 mb-4">
-                <FeatureButton
-                  isActive={useHamHat}
+              <div className="flex flex-col space-y-2 w-full">
+                <Button 
+                  className="bg-violet-600 hover:bg-violet-500 text-white neon-border rounded"
                   onClick={toggleHamHat}
-                  imageSrc="HatButton.png"
-                  alt="Ham Hat"
-                />
-                <FeatureButton
-                  isActive={useGham}
+                >
+                  {useHamHat ? 'Remove Ham Hat' : 'Add Ham Hat'}
+                </Button>
+                <Button 
+                  className="bg-violet-600 hover:bg-violet-500 text-white neon-border rounded"
                   onClick={toggleGham}
-                  imageSrc="GM.png"
-                  alt="G'ham"
-                />
-                <FeatureButton
-                  isActive={useWhiteHam}
-                  onClick={toggleWhiteHam}
-                  imageSrc="Ham1Button.png"
-                  alt="White Ham"
-                />
-                <FeatureButton
-                  isActive={useRedHam}
-                  onClick={toggleRedHam}
-                  imageSrc="Ham2Button.png"
-                  alt="Red Ham"
-                />
-                <FeatureButton
-                  isActive={useSheet}
-                  onClick={toggleSheet}
-                  imageSrc="SheetButton.png"
-                  alt="Add Sheet"
-                />
-                <FeatureButton
-                  isActive={usePumpkin}
-                  onClick={togglePumpkin}
-                  imageSrc="PumpkinButton.png"
-                  alt="Add Pumpkin"
-                />
+                >
+                  {useGham ? 'Remove G\'ham' : 'Add G\'ham'}
+                </Button>
+                <Button 
+                  className="bg-green-600 hover:bg-green-500 text-white neon-border rounded"
+                  onClick={downloadPng}
+                >
+                  Download PNG
+                </Button>
               </div>
-              <Button 
-                className="bg-green-600 hover:bg-green-500 text-white neon-border rounded w-full"
-                onClick={downloadPng}
-              >
-                Download PNG
-              </Button>
             </CardContent>
           </Card>
         )}
