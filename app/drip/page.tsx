@@ -105,7 +105,8 @@ export default function DripNftViewer() {
           await drawImage(ctx, '/traits/Eyes/Pumpkin.png')
         } else {
           const traitValue = traits[traitType]
-          if (traitValue) {
+          // Don't draw the "Mask" eye trait if Sheet is active
+          if (traitValue && !(useSheet && traitValue === 'Mask')) {
             await drawImage(ctx, `/traits/${traitType}/${traitValue}.png`)
           }
         }
