@@ -30,6 +30,7 @@ export default function DripNftViewer() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [selectedBackground, setSelectedBackground] = useState('Green');
   const [usePumpkin, setUsePumpkin] = useState(false);
+  const [useDeployer, setUseDeployer] = useState(false);
 
   const fetchNftData = async () => {
     setIsLoading(true)
@@ -65,7 +66,7 @@ export default function DripNftViewer() {
     if (Object.keys(traits).length > 0) {
       generateImage()
     }
-  }, [traits, useHamHat, useGham, useWhiteHam, useRedHam, useSheet, selectedBackground, usePumpkin])
+  }, [traits, useHamHat, useGham, useWhiteHam, useRedHam, useDeployer, useSheet, selectedBackground, usePumpkin])
 
   const generateImage = async () => {
     const canvas = canvasRef.current
@@ -94,6 +95,8 @@ export default function DripNftViewer() {
           await drawImage(ctx, '/traits/Shirt/RedHam.png')
         } else if (useSheet) {
           await drawImage(ctx, '/traits/Shirt/Sheet.png')
+        } else if (useDeployer) {
+          await drawImage(ctx, '/traits/Shirt/Deployer.png')
         } else {
           const traitValue = traits[traitType]
           if (traitValue) {
@@ -203,6 +206,15 @@ export default function DripNftViewer() {
       setUseHamHat(false); // Turn off Ham Hat when Pumpkin is active
     }
   }
+
+  const toggleDeployer = () => {
+    setUseDeployer(!useDeployer);
+    if (useDeployer) {
+      setUseWhiteHam(false);
+      setUseRedHam(false);
+      setUseSheet(false);
+    }
+  };
 
   const downloadPng = () => {
     if (imageUrl) {
@@ -393,6 +405,12 @@ export default function DripNftViewer() {
                   onClick={toggleRedHam}
                   imageSrc="Ham2Button.png"
                   alt="Red Ham"
+                />
+                <FeatureButton
+                  isActive={useDeployer}
+                  onClick={toggleDeployer}
+                  imageSrc="DepButton.png"
+                  alt="Add Deployer"
                 />
                 <FeatureButton
                   isActive={useSheet}
