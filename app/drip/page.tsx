@@ -31,6 +31,7 @@ export default function DripNftViewer() {
   const [selectedBackground, setSelectedBackground] = useState('Green');
   const [usePumpkin, setUsePumpkin] = useState(false);
   const [useDeployer, setUseDeployer] = useState(false);
+  const [useOnesie, setUseOnesie] = useState(false);
 
   const fetchNftData = async () => {
     setIsLoading(true)
@@ -66,7 +67,7 @@ export default function DripNftViewer() {
     if (Object.keys(traits).length > 0) {
       generateImage()
     }
-  }, [traits, useHamHat, useGham, useWhiteHam, useRedHam, useDeployer, useSheet, selectedBackground, usePumpkin])
+  }, [traits, useHamHat, useGham, useWhiteHam, useRedHam, useDeployer, useSheet, useOnesie, selectedBackground, usePumpkin])
 
   const generateImage = async () => {
     const canvas = canvasRef.current
@@ -97,6 +98,8 @@ export default function DripNftViewer() {
           await drawImage(ctx, '/traits/Shirt/Sheet.png')
         } else if (useDeployer) {
           await drawImage(ctx, '/traits/Shirt/Deployer.png')
+        } else if (useOnesie) {
+          await drawImage(ctx, '/traits/Shirt/Onesie.png')
         } else {
           const traitValue = traits[traitType]
           if (traitValue) {
@@ -104,7 +107,7 @@ export default function DripNftViewer() {
           }
         }
       } else if (traitType === 'Eyes') {
-        if (usePumpkin) {
+        if (usePumpkin && !useOnesie) { // Only draw Pumpkin if Onesie is not active
           await drawImage(ctx, '/traits/Eyes/Pumpkin.png')
         } else {
           const traitValue = traits[traitType]
@@ -114,7 +117,7 @@ export default function DripNftViewer() {
           }
         }
       } else if (traitType === 'Hat') {
-        if (!usePumpkin) { // Only draw Hat if Pumpkin is not active
+        if (!usePumpkin && !useOnesie) { // Only draw Hat if Pumpkin and Onesie are not active
           if (useHamHat) {
             await drawImage(ctx, '/traits/Hat/Ham hat.png')
           } else {
@@ -125,7 +128,7 @@ export default function DripNftViewer() {
           }
         }
       } else if (traitType === 'Special') {
-        if (!usePumpkin) { // Only draw Special if Pumpkin is not active
+        if (!usePumpkin) { // Only draw Special if Pumpkin is not active (allow with Onesie)
           const traitValue = traits[traitType]
           if (traitValue) {
             // Don't display Cigar, Cigarette, or Vape when Sheet is active
@@ -213,6 +216,18 @@ export default function DripNftViewer() {
       setUseWhiteHam(false);
       setUseRedHam(false);
       setUseSheet(false);
+    }
+  };
+
+  const toggleOnesie = () => {
+    setUseOnesie(!useOnesie);
+    if (!useOnesie) { // If we're activating the Onesie
+      setUseWhiteHam(false);
+      setUseRedHam(false);
+      setUseSheet(false);
+      setUseDeployer(false);
+      setUseHamHat(false);
+      setUsePumpkin(false); // Deactivate Pumpkin when Onesie is activated
     }
   };
 
@@ -417,6 +432,12 @@ export default function DripNftViewer() {
                   onClick={toggleSheet}
                   imageSrc="SheetButton.png"
                   alt="Add Sheet"
+                />
+                <FeatureButton
+                  isActive={useOnesie}
+                  onClick={toggleOnesie}
+                  imageSrc="OnesieButton.png"
+                  alt="Add Onesie"
                 />
                 <FeatureButton
                   isActive={usePumpkin}
