@@ -32,6 +32,7 @@ export default function DripNftViewer() {
   const [usePumpkin, setUsePumpkin] = useState(false);
   const [useDeployer, setUseDeployer] = useState(false);
   const [useOnesie, setUseOnesie] = useState(false);
+  const [useSanta, setUseSanta] = useState(false);
 
   const fetchNftData = async () => {
     setIsLoading(true)
@@ -67,7 +68,7 @@ export default function DripNftViewer() {
     if (Object.keys(traits).length > 0) {
       generateImage()
     }
-  }, [traits, useHamHat, useGham, useWhiteHam, useRedHam, useDeployer, useSheet, useOnesie, selectedBackground, usePumpkin])
+  }, [traits, useHamHat, useGham, useWhiteHam, useRedHam, useDeployer, useSheet, useOnesie, selectedBackground, usePumpkin, useSanta])
 
   const generateImage = async () => {
     const canvas = canvasRef.current
@@ -89,7 +90,14 @@ export default function DripNftViewer() {
 
     // Draw trait layers in order
     for (const traitType of TRAIT_ORDER) {
-      if (traitType === 'Shirt') {
+      if (traitType === 'Pants') {
+        if (!useSanta) { // Skip pants if Santa is active
+          const traitValue = traits[traitType]
+          if (traitValue) {
+            await drawImage(ctx, `/traits/${traitType}/${traitValue}.png`)
+          }
+        }
+      } else if (traitType === 'Shirt') {
         if (useWhiteHam) {
           await drawImage(ctx, '/traits/Shirt/WhiteHam.png')
         } else if (useRedHam) {
@@ -100,6 +108,8 @@ export default function DripNftViewer() {
           await drawImage(ctx, '/traits/Shirt/Deployer.png')
         } else if (useOnesie) {
           await drawImage(ctx, '/traits/Shirt/Onesie.png')
+        } else if (useSanta) {
+          await drawImage(ctx, '/traits/Shirt/Santa.png')
         } else {
           const traitValue = traits[traitType]
           if (traitValue) {
@@ -117,7 +127,7 @@ export default function DripNftViewer() {
           }
         }
       } else if (traitType === 'Hat') {
-        if (!usePumpkin && !useOnesie) { // Only draw Hat if Pumpkin and Onesie are not active
+        if (!usePumpkin && !useOnesie && !useSanta) { // Only draw Hat if Pumpkin and Onesie are not active
           if (useHamHat) {
             await drawImage(ctx, '/traits/Hat/Ham hat.png')
           } else {
@@ -228,6 +238,17 @@ export default function DripNftViewer() {
       setUseDeployer(false);
       setUseHamHat(false);
       setUsePumpkin(false); // Deactivate Pumpkin when Onesie is activated
+    }
+  };
+
+  const toggleSanta = () => {
+    setUseSanta(!useSanta);
+    if (!useSanta) { // If we're activating Santa
+      setUseWhiteHam(false);
+      setUseRedHam(false);
+      setUseSheet(false);
+      setUseDeployer(false);
+      setUseOnesie(false);
     }
   };
 
@@ -428,22 +449,16 @@ export default function DripNftViewer() {
                   alt="Add Deployer"
                 />
                 <FeatureButton
-                  isActive={useSheet}
-                  onClick={toggleSheet}
-                  imageSrc="SheetButton.png"
-                  alt="Add Sheet"
-                />
-                <FeatureButton
                   isActive={useOnesie}
                   onClick={toggleOnesie}
                   imageSrc="OnesieButton.png"
                   alt="Add Onesie"
                 />
                 <FeatureButton
-                  isActive={usePumpkin}
-                  onClick={togglePumpkin}
-                  imageSrc="PumpkinButton.png"
-                  alt="Add Pumpkin"
+                  isActive={useSanta}
+                  onClick={toggleSanta}
+                  imageSrc="SantaButton.png"
+                  alt="Add Santa"
                 />
               </div>
               <Button 
