@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import React from 'react'
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef, useEffect, useCallback } from 'react'
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card"
@@ -63,14 +63,7 @@ export default function DripNftViewer() {
     }
   }
 
-  useEffect(() => {
-    console.log('Traits changed:', traits)
-    if (Object.keys(traits).length > 0) {
-      generateImage()
-    }
-  }, [traits, useHamHat, useGham, useWhiteHam, useRedHam, useDeployer, useSheet, useOnesie, selectedBackground, usePumpkin, useSanta])
-
-  const generateImage = async () => {
+  const generateImage = useCallback(async () => {
     const canvas = canvasRef.current
     if (!canvas) return
 
@@ -164,7 +157,16 @@ export default function DripNftViewer() {
     // Convert canvas to image URL
     const imageUrl = canvas.toDataURL('image/png')
     setImageUrl(imageUrl)
-  }
+  }, [traits, useHamHat, useGham, useWhiteHam, useRedHam, useDeployer, useSheet, 
+      useOnesie, selectedBackground, usePumpkin, useSanta])
+
+  useEffect(() => {
+    console.log('Traits changed:', traits)
+    if (Object.keys(traits).length > 0) {
+      generateImage()
+    }
+  }, [traits, useHamHat, useGham, useWhiteHam, useRedHam, useDeployer, useSheet, 
+      useOnesie, selectedBackground, usePumpkin, useSanta, generateImage])
 
   const drawImage = (ctx: CanvasRenderingContext2D, src: string): Promise<void> => {
     return new Promise((resolve, reject) => {
@@ -202,21 +204,6 @@ export default function DripNftViewer() {
     if (useRedHam) {
       setUseWhiteHam(false)
       setUseSheet(false)
-    }
-  }
-
-  const toggleSheet = () => {
-    setUseSheet(!useSheet)
-    if (useSheet) {
-      setUseWhiteHam(false)
-      setUseRedHam(false)
-    }
-  }
-
-  const togglePumpkin = () => {
-    setUsePumpkin(!usePumpkin)
-    if (usePumpkin) {
-      setUseHamHat(false); // Turn off Ham Hat when Pumpkin is active
     }
   }
 
@@ -403,7 +390,13 @@ export default function DripNftViewer() {
               <CardTitle className="text-xl text-center text-white neon-text">YOUR HAM PEPE</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col items-center">
-              <img src={imageUrl} alt="Generated Ham Pepe" className="max-w-full h-auto mb-4" />
+              <Image 
+                src={imageUrl} 
+                alt="Generated Ham Pepe" 
+                className="max-w-full h-auto mb-4"
+                width={500}
+                height={500}
+              />
               <div className="flex justify-center flex-wrap gap-1 sm:gap-2 mb-4">
                 {BACKGROUND_COLORS.map((color) => (
                   <ColorButton
